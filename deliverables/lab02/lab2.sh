@@ -6,3 +6,6 @@ echo "TypeChecking: "
 # run pnpm typecheck and fail if there are errors
 pnpm typecheck
 
+
+pnpm eslint
+
