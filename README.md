@@ -27,6 +27,7 @@ A modern, responsive implementation of the classic 2048 puzzle game, built with 
 ## 🛠️ Getting Started
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) (v18+ recommended)
 - [pnpm](https://pnpm.io/) (preferred)
 
