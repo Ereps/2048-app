@@ -13,5 +13,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: "10.27.0"
-      - run: chmod +x deliverables/lab02/lab2.sh
-      - run: ./deliverables/lab02/lab2.sh
+      - name: Giving rights to execute
+        run: chmod +x deliverables/lab02/lab2.sh
+      - name: Running the pipeline
+        run: ./deliverables/lab02/lab2.sh
