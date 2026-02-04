@@ -9,6 +9,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          pnpm-version: "10.27.0"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - run: chmod +x deliverables/lab02/lab2.sh
       - run: ./deliverables/lab02/lab2.sh
