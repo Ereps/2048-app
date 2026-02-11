@@ -1,6 +1,8 @@
 name: Pipeline
 run-name: Running check ups
 on: [push]
+    schedule:
+      - cron: "0 8 * * *"
 jobs:
   Hello-World-Action:
     runs-on: ubuntu-latest
