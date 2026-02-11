@@ -45,7 +45,7 @@ jobs:
           version: "10.28.2"
 
       - name: Type checking
-        run: pnpm nuxt typecheck
+        run: pnpm typecheck
 
       - name: Lint
         run: pnpm lint
@@ -66,10 +66,10 @@ jobs:
           version: "10.28.2"
 
       - name: Build
-        run: pnpm nuxt build
+        run: pnpm build
 
       - name: Tests
-        run: pnpm vitest run
+        run: pnpm test
 
   security:
     runs-on: ubuntu-latest
