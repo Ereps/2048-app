@@ -1,49 +1,90 @@
 name: Pipeline
 run-name: Running check ups
+
 on:
   push:
+
 jobs:
-  Real-Pipeline:
+  setup:
     runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: "10.28.2"
+
+      - name: Install dependencies
+        run: pnpm install
+
+  quality:
+    runs-on: ubuntu-latest
+    needs: setup
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
         with:
           version: "10.28.2"
-
-      - name: Installation des dépendances
-        run: pnpm install
-
-      ## Partie Pour aller plus loin ##
-      - name: Identification des dépendances obsolètes
-        run: |
-          mkdir -p reports
-          pnpm outdated --format json > reports/outdated-dependencies.json
-        continue-on-error: true
-
-      - name: Identification des dépendances vulnérables
-        run: |
-          pnpm audit --json > reports/vulnerable-dependencies.json
-        continue-on-error: true
-      ## Partie Pour aller plus loin ##
+      - run: pnpm install
 
       - name: Type checking
         run: pnpm nuxt typecheck
 
-      - name: Build du projet
-        run: pnpm nuxt build
-
-      - name: Analyse statique (ESLint)
+      - name: Lint
         run: pnpm lint
 
-      - name: Execution des tests
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: "10.28.2"
+      - run: pnpm install
+
+      - name: Build
+        run: pnpm nuxt build
+
+      - name: Tests
         run: pnpm vitest run
 
-      - name: Upload des rapports
+  security:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - uses: pnpm/action-setup@v4
+        with:
+          version: "10.28.2"
+      - run: pnpm install
+
+      - name: Reports
+        run: |
+          mkdir -p reports
+          pnpm outdated --format json > reports/outdated-dependencies.json || true
+          pnpm audit --json > reports/vulnerable-dependencies.json || true
+
+      - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
