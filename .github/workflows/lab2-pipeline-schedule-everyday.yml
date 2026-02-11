@@ -38,7 +38,7 @@ jobs:
         run: pnpm nuxt build
 
       - name: Analyse statique (ESLint)
-        run: pnpm eslint .
+        run: pnpm lint
 
       - name: Execution des tests
         run: pnpm vitest run
