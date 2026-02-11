@@ -1,0 +1,50 @@
+name: Pipeline
+run-name: Running check ups
+on:
+  push:
+jobs:
+  Hello-World-Action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10.27.0"
+
+      - name: Installation des dépendances
+        run: pnpm install
+
+      ## Partie Pour aller plus loin ##
+      - name: Identification des dépendances obsolètes
+        run: |
+          mkdir -p reports
+          pnpm outdated --format json > reports/outdated-dependencies.json
+
+      - name: Identification des dépendances vulnérables
+        run: |
+          pnpm audit --json > reports/vulnerable-dependencies.json
+        continue-on-error: true
+      ## Partie Pour aller plus loin ##
+
+      - name: Type checking
+        run: pnpm nuxt typecheck
+
+      - name: Build du projet
+        run: pnpm nuxt build
+
+      - name: Analyse statique (ESLint)
+        run: pnpm eslint .
+
+      - name: Execution des tests
+        run: pnpm vitest run
+
+      - name: Upload des rapports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-reports
+          path: reports/
