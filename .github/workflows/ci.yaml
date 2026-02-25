@@ -5,7 +5,16 @@ on:
     branches:
       - main
       - "lab*"
+    paths-ignore:
+      - "docs/**"
+
   workflow_dispatch:
+
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   typecheck:
