@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: 2048-app-build
-          path: .output/
+          path: .vercel/output/
           retention-days: 1
 
   deploy:
@@ -54,6 +54,6 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: 2048-app-build
-          path: .vercel/output
+          path: .vercel/output/
       - name: Deploy on vercel
         run: pnpm vercel deploy --prebuilt --prod --token=${{env.VERCEL_TOKEN}}
